@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/service/(.*)",
+      "dest": "/proxy?url=$1"
+    }
+  ]
+}

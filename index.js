@@ -1,23 +1,23 @@
 import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fetch from 'node-fetch';  // Or any library you use for making HTTP requests
 
 const app = express();
-const PORT = process.env.PORT || 8080;
 
-// Get the current directory path using import.meta.url
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.get('/proxy', async (req, res) => {
+  const targetUrl = req.query.url;  // Get the URL from query
+  if (!targetUrl) {
+    return res.status(400).send('URL parameter is required');
+  }
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Default route
-app.get('/', (req, res) => {
-    res.send('Ultraviolet Proxy is running!');
+  try {
+    const response = await fetch(`https://${targetUrl}`);
+    const data = await response.text();
+    res.send(data);
+  } catch (error) {
+    res.status(500).send('Error fetching the URL');
+  }
 });
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(3000, () => {
+  console.log('Server is running');
 });
